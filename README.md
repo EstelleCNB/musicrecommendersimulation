@@ -12,6 +12,7 @@ Your goal is to:
 - Reflect on how this mirrors real world AI recommenders
 
 Replace this paragraph with your own summary of what your version does.
+My version of recommendations will be based off of penalizing the distance from preference. It rewards closeness in either direction, so if a song is too energetic, or too mellow, then it will get penalized. This will be effi
 
 ---
 
@@ -26,6 +27,37 @@ Some prompts to answer:
 - What information does your `UserProfile` store
 - How does your `Recommender` compute a score for each song
 - How do you choose which songs to recommend
+
+The system scores every song against a user's taste profile, then ranks them.
+It has two distinct rules:
+
+- **Scoring rule** (`score_song`) — measures how well *one* song matches the user.
+- **Ranking rule** (`recommend_songs`) — sorts all scored songs and returns the top *k*.
+
+### Scoring Formula
+
+- **Categorical features:** exact match earns the feature's full weight, else 0.
+- **Numerical features:** closeness = `1 - abs(song_value - target_value)`,
+  scaled by the feature's weight. A perfect match scores 1.0, opposite values 0.0.
+- **Total score:** the weighted sum across all features. Optionally divided by the
+  sum of weights to produce a 0–100% match.
+
+### Pipeline
+
+1. `load_songs` — read the CSV, casting numeric columns to floats.
+2. `score_song` — compute a weighted match score + reasons for one song.
+3. `recommend_songs` — score all songs, sort by score, return the top *k*
+   with explanations.
+
+### Known Biases
+
+- **Exact-match bias** — only identical genre/mood labels score; near-cousins like
+  "indie pop" vs "pop" get no credit.
+- **Feature-weight bias** — the designer's default weights impose one taste on all users.
+- **Ignored features** — `tempo_bpm` is never scored, a silent blind spot.
+- **Filter bubble** — rewarding closeness to stated taste means no discovery or diversity.
+- **Small/uneven catalog** — genres with more songs are more likely to appear in results.
+- **Cold start** — scores rely on a stated profile, never on actual listening history.
 
 You can include a simple diagram or bullet list if helpful.
 
