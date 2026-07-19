@@ -61,6 +61,40 @@ It has two distinct rules:
 
 You can include a simple diagram or bullet list if helpful.
 
+==========Sample Recommendation Output=======
+                    TOP RECOMMENDATIONS                     
+============================================================
+
+1. Focus Flow — LoRoom
+   Score: 6.50
+   Reasons:
+     • genre match: lofi (+2.0)
+     • mood match: focused (+1.5)
+     • energy close to your target (+3.0)
+
+2. Midnight Coding — LoRoom
+   Score: 4.94
+   Reasons:
+     • genre match: lofi (+2.0)
+     • energy close to your target (+2.9)
+
+3. Library Rain — Paper Lanterns
+   Score: 4.85
+   Reasons:
+     • genre match: lofi (+2.0)
+     • energy close to your target (+2.8)
+
+4. Coffee Shop Stories — Slow Stereo
+   Score: 2.91
+   Reasons:
+     • energy close to your target (+2.9)
+
+5. Paper Boats — Wren & Willow
+   Score: 2.79
+   Reasons:
+     • energy close to your target (+2.8)
+
+============================================================
 ---
 
 ## Getting Started
