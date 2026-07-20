@@ -22,11 +22,13 @@ Explain your design in plain language.
 
 Some prompts to answer:
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+The UserProfile holds a user's taste in four fields: their favorite genre, their favorite mood, a target energy level (from 0.0 for calm to 1.0 for intense), and a likes_acoustic flag. One thing to note is that likes_acoustic is stored but the scorer never actually reads it, so it doesn't affect the results at the moment.
+
+How does your Recommender compute a score for each song
+For each song, the scorer adds up points across three things. If the song's genre matches the user's favorite genre, it adds 2.0 points, and if the mood matches, it adds 1.5. For energy, it measures how close the song's energy is to the user's target using 1 - abs(gap), then multiplies that by a weight of 3.0. So the closer the energy, the more points it earns. All three parts are added together into one final score, and the code also builds a short list of reasons explaining which features matched.
+
+How do you choose which songs to recommend
+I score every song in the catalog, then sort them from highest score to lowest and keep the top few. By default it returns the top 5. Each recommendation comes back with its score and a plain-language explanation of why it was picked, so the user can see what the song matched on.
 
 The system scores every song against a user's taste profile, then ranks them.
 It has two distinct rules:
@@ -132,6 +134,14 @@ pytest
 ```
 
 You can add more tests in `tests/test_recommender.py`.
+====================================================================================================== test session starts ======================================================================================================
+platform darwin -- Python 3.13.7, pytest-9.1.1, pluggy-1.6.0 -- /opt/anaconda3/envs/opencv-env/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/caitlynbennett/ai_engineering1101/musicrecommendersimulation/musicrecommendersimulation
+collected 2 items                                                                                                                                                                                                               
+
+tests/test_recommender.py::test_recommend_returns_songs_sorted_by_score PASSED                                                                                                                                            [ 50%]
+tests/test_recommender.py::test_explain_recommendation_returns_non_empty_string PASSED                                                                                                                                    [100%]
 
 ---
 
@@ -139,17 +149,44 @@ You can add more tests in `tests/test_recommender.py`.
 
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
 
-```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
-```
 
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 
+============================================================
+(opencv-env) caitlynbennett@Estelles-MacBook-Pro musicrecommendersimulation % python src/main.py
+Loaded songs: 18
+
+============================================================
+           TOP RECOMMENDATIONS — High-Energy Pop            
+============================================================
+
+1. Sunrise City — Neon Echo
+   Score: 8.02
+   Reasons:
+     • genre match: pop (+1.0)
+     • mood match: happy (+1.5)
+     • energy close to your target (+5.5)
+
+2. Gym Hero — Max Pulse
+   Score: 6.82
+   Reasons:
+     • genre match: pop (+1.0)
+     • energy close to your target (+5.8)
+
+3. Rooftop Lights — Indigo Parade
+   Score: 6.66
+   Reasons:
+     • mood match: happy (+1.5)
+     • energy close to your target (+5.2)
+
+4. Storm Runner — Voltline
+   Score: 5.94
+   Reasons:
+     • energy close to your target (+5.9)
+
+5. Neon Overdrive — Pulsewave
+   Score: 5.70
+   Reasons:
+     • energy close to your target (+5.7)
 ---
 
 ## Experiments You Tried
@@ -184,8 +221,9 @@ Read and complete `model_card.md`:
 
 Write 1 to 2 paragraphs here about what you learned:
 
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
+Working on this project made me learn the math behind recommenders. Each song is broken down into numbers and labels, like genre, mood, and energy, and the system scores how well each one lines up with what the user says they want. The prediction isn't magic. It's just adding up points based on weights I chose, like genre being worth 2 points and energy being worth 3, and then sorting the songs from highest to lowest. What surprised me most is how much those small choices matter. Changing one weight or ignoring one feature completely changes what gets recommended, even though the data itself never changed. So a lot of the "intelligence" is really just decisions the designer made about what counts as important.
+
+I also learned that bias and unfairness can sneak in really easily, usually without anyone meaning for it to happen. In my system, the dataset was uneven, since some genres had several songs and others had only one, so users with popular tastes got lots of good options while niche listeners barely had any real choices. The scoring can be unfair too. Because energy is weighted so heavily, it can outweigh a perfect genre match, and preferences like likes_acoustic get ignored entirely(which that is my fault), so certain users are basically invisible to the system. This made me understand that fairness in these systems depends just as much on the data you feed in and the weights you pick as it does on the code itself.
 
 
 

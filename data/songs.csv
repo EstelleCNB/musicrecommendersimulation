@@ -17,3 +17,7 @@ id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
 16,Velvet Hours,Sienna Rae,r&b,romantic,0.51,84,0.74,0.70,0.31
 17,Ironclad,Ashfall Order,metal,aggressive,0.97,168,0.35,0.58,0.04
 18,Paper Boats,Wren & Willow,folk,peaceful,0.33,88,0.67,0.48,0.91
+19,Golden Hour Drive,Neon Echo,pop,happy,0.79,120,0.86,0.83,0.20
+20,Rainy Window Beats,LoRoom,lofi,focused,0.38,76,0.55,0.61,0.80
+21,Thunder Alley,Voltline,rock,intense,0.89,148,0.45,0.64,0.12
+22,Velvet Midnight,Sienna Rae,r&b,romantic,0.53,86,0.76,0.72,0.29
