@@ -24,11 +24,21 @@ Prompts:
 Explain your scoring approach in simple language.  
 
 Prompts:  
+Features it does not consider
 
-- What features of each song are used (genre, energy, mood, etc.)  
-- What user preferences are considered  
-- How does the model turn those into a score  
-- What changes did you make from the starter logic  
+The model only looks at genre, mood, and energy. It ignores everything else the songs actually carry, like how positive a song feels (valence), its tempo, how danceable it is, and how acoustic it is. I found that it ignores the user's own "likes acoustic" preference, which is collected but never used. So if I have two very different songs, they can look the same to the model as long as they share a genre, mood, and energy level.
+
+Genres or moods that are underrepresented
+
+The catalog is small (18 songs) and lopsided. Lofi shows up three times, but most genres appear only once. Because the model needs an exact genre match to give credit, if the user likes one of those genres that only appears one, then never get a second true match, and their lists get padded with unrelated songs. Moods have the same gap: some moods barely appear, and "sad" isn't in the data at all, so a user wanting sad music gets nothing that fits.
+
+Cases where the system overfits to one preference
+
+The model favors energy very heavily. Matching a user's energy level is worth more than matching their mood, so once a genuinely good matches run out, energy alone decides the rest of the list. In testing, this produced some odd results: a happy pop song was recommended to someone who asked for intense rock, and a "high-energy but sad" request returned five upbeat songs that matched the sad mood on none of them. The list always fills up to five, even when only one or two songs truly fit.
+
+Ways the scoring might unintentionally favor some users
+
+Users whose taste lines up with the well-stocked genres (like lofi or pop) get coherent, satisfying lists. Users who like rare genres, unusual moods, or very high/very low energy get weaker results — sometimes filler, sometimes even negative scores. There's also a subtle ordering bias: when two songs tie, the one listed earlier in the file always wins, so the same songs tend to surface again and again.
 
 Avoid code here. Pretend you are explaining the idea to a friend who does not program.
 
